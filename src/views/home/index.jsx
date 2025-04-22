@@ -1,33 +1,36 @@
 import React, { memo, useEffect } from 'react'
-import pfRequest from '@/services'
-import { useState } from 'react'
 import { HomeWrapper } from './style'
 import HomeBanner from './c-cpns/home-banner'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { fetchHomeDataAction } from '@/store/modules/home'
+import SectionHeader from '@/components/section-header'
+import SectionRooms from '@/components/section-rooms'
 
 const Home = memo(() => {
-  // 定义状态
-  const [ highScore, setHighScore ] = useState({})
+  // 从redux中获取数据
+  const { goodPriceInfo } = useSelector((state) => ({
+    goodPriceInfo: state.home.goodPriceInfo
+  }), shallowEqual)
 
-  // 网络请求的代码
+  // 派发异步的事件：发送网络请求
+  const dispatch = useDispatch()
   useEffect(() => {
-    pfRequest.get({ url: "/home/highscore" }).then(res => {
-      console.log(res)
-      setHighScore(res)
-    })
-  }, [])
+    dispatch(fetchHomeDataAction())
+  }, [dispatch])
 
   return (
     <HomeWrapper>
-      <HomeBanner>
-        <div className="content">
-          <div className="good-price">
-            <div className="title">
-              <h2>{highScore.title}</h2>
-              <h4>{highScore.subtitle}</h4>
-            </div>
-          </div>
-        </div>
-      </HomeBanner>
+      <HomeBanner />
+      <div className="content">
+        {goodPriceInfo?.list?.length > 0 ? (
+          <>
+            <SectionHeader title={goodPriceInfo.title} />
+            <SectionRooms roomList={goodPriceInfo.list} itemWidth="20%" />
+          </>
+        ) : (
+          <div>加载中...</div>
+        )}
+      </div>
     </HomeWrapper>
   )
 })
