@@ -1,38 +1,54 @@
-import React, { memo, useEffect } from 'react'
-import { HomeWrapper } from './style'
-import HomeBanner from './c-cpns/home-banner'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { fetchHomeDataAction } from '@/store/modules/home'
-import SectionHeader from '@/components/section-header'
-import SectionRooms from '@/components/section-rooms'
+import React, { memo, useEffect } from 'react';
+import { HomeWrapper } from './style';
+import HomeBanner from './c-cpns/home-banner';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { fetchHomeDataAction } from '@/store/modules/home';
+import { isEmptyO } from '@/utils';
+import HomeSectionV1 from './c-cpns/home-section-v1';
+import HomeSectionV2 from './c-cpns/home-section-v2';
+import HomeSectionV3 from './c-cpns/home-section-v3';
+import HomeLongfor from './c-cpns/home-longfor';
 
 const Home = memo(() => {
   // 从redux中获取数据
-  const { goodPriceInfo } = useSelector((state) => ({
-    goodPriceInfo: state.home.goodPriceInfo
-  }), shallowEqual)
+  const {
+    goodPriceInfo,
+    highScoreInfo,
+    discountInfo,
+    recomendInfo,
+    longforInfo,
+    plusInfo,
+  } = useSelector(
+    (state) => ({
+      goodPriceInfo: state.home.goodPriceInfo,
+      highScoreInfo: state.home.highScoreInfo,
+      discountInfo: state.home.discountInfo,
+      recomendInfo: state.home.recomendInfo,
+      longforInfo: state.home.longforInfo,
+      plusInfo: state.home.plusInfo,
+    }),
+    shallowEqual
+  );
 
   // 派发异步的事件：发送网络请求
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchHomeDataAction())
-  }, [dispatch])
+    dispatch(fetchHomeDataAction());
+  }, [dispatch]);
 
   return (
     <HomeWrapper>
       <HomeBanner />
       <div className="content">
-        {goodPriceInfo?.list?.length > 0 ? (
-          <>
-            <SectionHeader title={goodPriceInfo.title} />
-            <SectionRooms roomList={goodPriceInfo.list} itemWidth="20%" />
-          </>
-        ) : (
-          <div>加载中...</div>
-        )}
+        {isEmptyO(discountInfo) && <HomeSectionV2 infoData={discountInfo} />}
+        {isEmptyO(recomendInfo) && <HomeSectionV2 infoData={recomendInfo} />}
+        {isEmptyO(longforInfo) && <HomeLongfor infoData={longforInfo} />}
+        {isEmptyO(goodPriceInfo) && <HomeSectionV1 infoData={goodPriceInfo} />}
+        {isEmptyO(highScoreInfo) && <HomeSectionV1 infoData={highScoreInfo} />}
+        {isEmptyO(plusInfo) && <HomeSectionV3 infoData={plusInfo} />}
       </div>
     </HomeWrapper>
-  )
-})
+  );
+});
 
-export default Home
+export default Home;
