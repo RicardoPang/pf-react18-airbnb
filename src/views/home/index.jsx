@@ -8,6 +8,7 @@ import HomeSectionV1 from './c-cpns/home-section-v1';
 import HomeSectionV2 from './c-cpns/home-section-v2';
 import HomeSectionV3 from './c-cpns/home-section-v3';
 import HomeLongfor from './c-cpns/home-longfor';
+import { changeHeaderConfigAction } from '@/store/modules/main';
 
 const Home = memo(() => {
   // 从redux中获取数据
@@ -18,6 +19,7 @@ const Home = memo(() => {
     recomendInfo,
     longforInfo,
     plusInfo,
+    // 返回多个 state 字段时，记得用 shallowEqual，避免 useSelector 返回新对象导致的警告
   } = useSelector(
     (state) => ({
       goodPriceInfo: state.home.goodPriceInfo,
@@ -34,6 +36,7 @@ const Home = memo(() => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHomeDataAction());
+    dispatch(changeHeaderConfigAction({ isFixed: true, topAlpha: false }));
   }, [dispatch]);
 
   return (

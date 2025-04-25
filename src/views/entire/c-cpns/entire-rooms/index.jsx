@@ -7,6 +7,7 @@ import { changeDetailInfoAction } from '@/store/modules/detail';
 
 const EntireRooms = memo(() => {
   // 从redux中获取roomList数据
+  // 返回多个 state 字段时，记得用 shallowEqual，避免 useSelector 返回新对象导致的警告
   const { roomList, totalCount, isLoading } = useSelector(
     (state) => ({
       roomList: state.entire.roomList,

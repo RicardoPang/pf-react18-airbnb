@@ -5,6 +5,7 @@ import { PaginationWrapper } from './style';
 import { featchRoomListAction } from '@/store/modules/entire/createActions';
 
 const EntirePagination = memo(() => {
+  // 返回多个 state 字段时，记得用 shallowEqual，避免 useSelector 返回新对象导致的警告
   const { totalCount, currentPage, roomList } = useSelector(
     (state) => ({
       totalCount: state.entire.totalCount,
