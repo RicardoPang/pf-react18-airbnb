@@ -19,5 +19,5 @@ export default function useScrollPostion() {
   }, []);
 
   // 返回
-  return [scrollX, scrollY];
+  return { scrollX, scrollY };
 }
