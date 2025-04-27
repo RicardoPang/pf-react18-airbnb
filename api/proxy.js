@@ -2,22 +2,19 @@
 // 这样可以解决浏览器 Mixed Content 问题，无需后端支持 HTTPS
 
 export default async function handler(req, res) {
-  // 拼接目标后端接口地址
-  const targetUrl = 'http://codercba.com:1888/airbnb/api' + req.url.replace('/api/proxy', '');
+  // 保证路径拼接正确，/api/proxy/home/plus => /airbnb/api/home/plus
+  const backendPath = req.url.replace(/^\/api\/proxy/, '');
+  const targetUrl = 'http://codercba.com:1888/airbnb/api' + backendPath;
 
-  // 构造 fetch 请求参数
   const fetchOptions = {
     method: req.method,
     headers: { ...req.headers },
-    // GET 请求不能有 body
     body: req.method === 'GET' ? undefined : req.body,
   };
 
-  // 发起请求
   const response = await fetch(targetUrl, fetchOptions);
   const data = await response.arrayBuffer();
 
-  // 设置响应头
   response.headers.forEach((value, key) => {
     res.setHeader(key, value);
   });
